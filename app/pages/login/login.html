@@ -1,0 +1,45 @@
+<dom-module id="page-login">
+    <style>
+        :host
+        {
+            display: block;
+        }
+    </style>
+
+    <template>
+        <hipsta-bg id="hipsta-bg"></hipsta-bg>
+        <animated-section phase="1" class="login-flow">
+            <div class="animated-section__item">
+                <label class="phone-input__phone-input-label" for="phone-input__input">
+                    Введите свой номер телефона
+                </label>
+                <div class="login-flow__phone-input">
+                    <i class="m-icon phone-input__icon">phone</i>
+                    <input is="iron-input" name="phone-input__input" class="phone-input__input" placeholder="+79998844555" class="flex"></input>
+                    <i class="m-icon phone-input__action">chevron_right</i>
+                </div>
+            </div>
+            <div class="animated-section__item">
+                <label class="phone-input__phone-input-label" for="phone-input__input">
+                    Введите подтверждающий код из смс
+                </label>
+                <div class="login-flow__phone-input">
+                    <i class="m-icon phone-input__icon">sms</i>
+                    <input is="iron-input" name="phone-input__input" class="phone-input__input" placeholder="4242" class="flex"></input>
+                    <i class="m-icon phone-input__action">chevron_right</i>
+                </div>
+            </div>
+        </animated-section>
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'page-login',
+                properties: {
+                }
+            });
+        })();
+    </script>
+
+</dom-module>

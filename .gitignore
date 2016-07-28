@@ -1,0 +1,16 @@
+# Cordova
+platforms/
+plugins/
+
+# NPM
+node_modules/
+
+# Adb log file
+log
+
+node_modules
+www
+bower_components
+.tmp
+
+dist/

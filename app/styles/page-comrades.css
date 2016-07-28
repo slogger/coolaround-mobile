@@ -1,0 +1,55 @@
+.contact-list
+{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.content-wrap
+{
+    height: 100vh;
+    padding-bottom: 48px;
+}
+
+.comrades-card
+{
+    position: relative;
+}
+
+.comrades-card:nth-child(odd)
+{
+    background: #ecf0f1;
+}
+
+.comrades-card #checkboxContainer
+{
+    position: absolute;
+    bottom: 4px;
+    left: 49px;
+    z-index: 2;
+    background-color: white !important;
+}
+
+.comrades-card #checkboxLabel
+{
+    padding: 0;
+}
+
+.inline-userpic
+{
+    width: auto;
+}
+
+.page-comrades paper-checkbox
+{
+    width: 100%;
+}
+
+.divider
+{
+    margin: 0;
+    padding: 0.5em;
+    font-size: 0.9em;
+    color: white;
+    background-color: #3F51B5;
+}

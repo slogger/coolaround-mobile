@@ -1,0 +1,72 @@
+.login-flow__phone-input
+{
+    display: flex;
+    background: #fff;
+    opacity: .9;
+    height: 42px;
+}
+
+.phone-input__input
+{
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    padding-left: 40px;
+    font-size: 1.8em;
+    flex: 1;
+    font-weight: 100;
+    background: none;
+    font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.phone-input__icon
+{
+    position: absolute;
+    font-size: 26px;
+    padding: 8px;
+}
+
+.phone-input__action
+{
+    border-left: 1px #000 inset;
+    font-size: 2.625em;
+}
+
+.phone-input__phone-input-label
+{
+    color: #fff;
+    font-weight: 100;
+}
+
+.animated-section__item
+{
+    padding: 10px;
+}
+
+[animate-state="hold"] .phone-input__phone-input-label,
+[animate-state="hold"] .phone-input__action
+{
+    display: none;
+}
+
+[animate-state="hold"] .login-flow__phone-input
+{
+    transition: opacity 1s linear;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+animated-section [animate-state]
+{
+    transition: all 1s cubic-bezier(0.6, -0.28, 0.63, 0.74);
+    transform: translateY(200vh);
+}
+animated-section [animate-state=hold]
+{
+    transform: translateY(0);
+}
+animated-section [animate-state=show]
+{
+    transform: translateY(30vh);
+}

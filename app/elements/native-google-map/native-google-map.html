@@ -1,0 +1,116 @@
+<dom-module id="native-google-map">
+    <style>
+        :host
+        {
+            display: block;
+            height: 100%;
+            position: relative;
+            width: 100%;
+        }
+        .map
+        {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+    <template>
+        <div id="map" class="map"></div>
+    </template>
+
+    <script>
+        (function() {
+            Polymer({
+                is: 'native-google-map',
+                properties: {
+                    friends: {
+                        type: Object,
+                        notify: true,
+                        observer: '_friendsChanged'
+                    }
+                },
+                ready: function() {
+                    var self = this;
+                    document.addEventListener('deviceready', function() {
+                        var mapNode = self.$.map;
+                        const RUSSIAN_GEO_CENTER = new plugin.google.maps.LatLng(66.78889, 93.77528);
+                        var map = plugin.google.maps.Map.getMap(mapNode, {
+                            'backgroundColor': 'white',
+                            'mapType': plugin.google.maps.MapTypeId.ROADMAP,
+                            'controls': {
+                                'compass': true,
+                                'myLocationButton': true,
+                                'indoorPicker': false,
+                                'zoom': true
+                            },
+                            'gestures': {
+                                'scroll': true,
+                                'tilt': true,
+                                'rotate': true,
+                                'zoom': true
+                            },
+                            'camera': {
+                                'latLng': RUSSIAN_GEO_CENTER,
+                                'tilt': 30,
+                                'zoom': 3,
+                                'bearing': 180
+                            }
+                        });
+                        self._map = map;
+                        map.on(plugin.google.maps.event.MAP_LOADED, self._onMapInit);
+                    });
+                },
+                _onMapInit: function (map) {
+                    console.log('Map inited');
+                    map.getMyLocation(function (loc) {
+                        console.log('yo', loc);
+                        map.animateCamera({
+                            'target':  loc.latLng,
+                            'duration': 5000,
+                            'zoom': 15,
+                            'bearing': 0,
+                            'tilt':45
+                        }, function() {
+                            console.log('anim ok');
+                        });
+                    }, function (err) {
+                        console.error(err);
+                    });
+                },
+                _friendsChanged: function (friends) {
+                    var friends = [{
+                        phone: 792226018274,
+                        name: 'Maxim Syrykh',
+                        geo: {
+                            location: [56.8414614, 60.6149397]
+                        },
+                        userpic: window.__userpicСache['Maxim Syrykh']
+                    }]
+                    var map = this._map;
+                    var self = this;
+                    map.clear(function () {
+                        friends.forEach(function (friend) {
+                            map.addMarker({
+                                'position': new plugin.google.maps.LatLng(friend.geo.location[0], friend.geo.location[1]),
+                                'title': friend.name,
+                                'icon': friend.userpic,
+                                'phone': friend.phone
+                            }, function (marker) {
+                                marker.addEventListener(plugin.google.maps.event.MARKER_CLICK, function() {
+                                    var name = marker.get('name');
+                                    var userpic = marker.get('icon');
+                                    var phone = marker.get('phone');
+                                    var app = document.querySelector('#app');
+                                    var modal = document.querySelector('#modal');
+                                    app.set('dialog', { name : name });
+                                    modal.open();
+                                });
+                            })
+                        })
+                    })
+                    console.log(friends);
+                }
+            });
+        })();
+    </script>
+
+</dom-module>

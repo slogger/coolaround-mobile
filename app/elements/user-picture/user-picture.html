@@ -1,0 +1,155 @@
+<dom-module id='user-picture'>
+    <style>
+        :host
+        {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
+        .canvas
+        {
+            display: none;
+        }
+        .userpic
+        {
+            display: inline-block;
+            vertical-align: middle;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 10px 15px;
+        }
+    </style>
+
+    <template>
+        <canvas class='canvas' id='canvas'></canvas>
+        <img class='userpic' id='userpic'></img>
+    </template>
+
+    <script>
+        (function () {
+            Polymer({
+                is: 'user-picture',
+                properties: {
+                    name: {
+                        type: String,
+                        notify: true,
+                        observer: '_nameChanged'
+                    },
+                    src: {
+                        type: String,
+                        notify: true,
+                        observer: '_srcChanged'
+                    }
+                },
+                /**
+                 * @method
+                 * @name updateUserpic
+                 * @description
+                 * @param {string} [newSrc] - New userPictureNodes
+                 * @param {string} [oldSrc=this node userpic src] - Use if your nead change picture another user, his userpic src
+                 */
+                updateUserpic: function (newSrc, oldSrc) {
+                    var filter = Array.prototype.filter;
+                    var oldSrc = oldSrc || this.$.userpic.src;
+                    var userPictureNodes = document.querySelectorAll('user-picture');
+                    var currentUserPictureNodes = filter.call(userPictureNodes, function (node) {
+                        return node.$.userpic.src === oldSrc
+                    });
+                    currentUserPictureNodes.forEach(function (node) {
+                        node.set('src', newSrc)
+                    });
+                },
+                /**
+                 * @callback
+                 * @private
+                 * @name _srcChanged
+                 * @param {string} [src] - source for userpic
+                 */
+                _srcChanged: function(src) {
+                    var userpicСache = window.__userpicСache || {};
+                    var img = this.$.userpic;
+                    img.src = src;
+                    userpicСache[this.name] = src;
+                    window.__userpicСache = userpicСache;
+                },
+                /**
+                 * @callback
+                 * @private
+                 * @name _nameChanged
+                 * @description if user don't have userpic, this callback generate his for her
+                 * @param {string} [src] - source for userpic
+                 */
+                _nameChanged: function(name) {
+
+                    var colours = [
+                        '#99b4e8', '#edde6d', '#76e1ed', '#fce899', '#a2f9cc', '#d497f4', '#768ae0',
+                        '#94fcc5', '#79eaf7', '#86ef9d', '#79fca2', '#f7afb5', '#c2e0fc', '#80b6f7',
+                        '#72eaba', '#8bdbe8', '#b5f791', '#f7cd79', '#9ffcdb', '#cac2fc', '#acef7f',
+                        '#91b9ea', '#eaab6b', '#fcf499', '#d5f791', '#b7a7ef', '#f4a59c', '#a1c9ed',
+                        '#e7a4f4', '#efc570', '#f298c5', '#a2b2f9', '#c0b9f7', '#a7f9f1', '#83f7d0',
+                        '#f7a8ae', '#9feaf9', '#90f4ea', '#a5ed78', '#97fc80', '#fc7876', '#d18af2'
+                    ];
+
+                    var hashCode = function(initials, salt) {
+                        var sum = 0;
+                        initials.split('').forEach(function(alphabet) {
+                            sum += alphabet.charCodeAt(0) - 64;
+                        });
+                        return sum % salt;
+                    }
+
+                    var getInitials = function(name) {
+                        var name = name.split(' ');
+                        var initials = '';
+                        if (name.length >= 2) {
+                            initials = name[0].charAt(0) + name[1].charAt(0);
+                        } else {
+                            initials = name[0].slice(0,2)
+                        }
+                        return initials.toUpperCase();
+                    }
+
+                    var initials = getInitials(name)
+
+                    var colourIndex = hashCode(name, colours.length)
+
+                    var canvas = this.$.canvas;
+                    var context = canvas.getContext('2d');
+
+                    var size = 50;
+
+                    if (window.devicePixelRatio) {
+                        var canvasDom = Polymer.dom(canvas);
+                        canvasDom.setAttribute('width', size);
+                        canvasDom.setAttribute('height', size);
+                    }
+
+                    context.fillStyle = colours[colourIndex];
+                    context.fillRect (0, 0, canvas.width, canvas.height);
+                    context.font = size / 2.2 + 'px Roboto';
+                    context.textAlign = 'center';
+                    context.fillStyle = '#FFF';
+                    context.fillText(initials, size / 2, size / 1.5);
+
+                    var userpicCache = window.__userpicСache || {};
+                    var image = this.$.userpic;
+                    if (!image.src) {
+                        if (userpicCache[name]) {
+                            image.src = userpicCache[name];
+                        } else {
+                            canvas.toBlob(function(blob) {
+                                var url = URL.createObjectURL(blob);
+                                userpicCache[name] = url;
+                                image.src = url;
+                            });
+                        }
+                    } else {
+                        userpicCache[name] = image.src;
+                    }
+                    window.__userpicСache = userpicCache;
+                }
+            });
+        })();
+    </script>
+</dom-module>

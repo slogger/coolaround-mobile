@@ -1,0 +1,59 @@
+<dom-module id="page-comrades">
+    <style>
+        :host
+        {
+            display: block;
+        }
+    </style>
+
+    <template>
+        <ul class="contact-list">
+            <p class="divider">Пользователи</p>
+            <template is="dom-repeat" items="{{ comrades }}" filter="isUser">
+                <li class="comrades-card">
+                    <paper-checkbox checked>
+                        <user-picture class="inline-userpic" src="{{item.userpic}}" name="{{item.name}}"></user-picture>
+                        <span>{{item.name}}</span>
+                    </paper-checkbox>
+                </li>
+            </template>
+            <p class="divider">Не пользователи</p>
+            <template is="dom-repeat" items="{{ comrades }}" filter="isNotUser">
+                <li class="comrades-card">
+                    <user-picture class="inline-userpic" src="{{item.userpic}}" name="{{item.name}}"></user-picture>
+                    <span>{{item.name}}</span>
+                </li>
+            </template>
+        </ul>
+    </template>
+
+    <script>
+        (function() {
+            Polymer({
+                is: 'page-comrades',
+                properties: {
+                    comrades: {
+                        type: Array,
+                        notify: true,
+                        observer: '_comradesChanged'
+                    },
+                },
+                ready: function() {
+                    console.log(navigator.contacts);
+                },
+                _comradesChanged: function(comrades) {
+                    this.comrades = comrades.sort(function(a, b) {
+                        return a.name > b.name;
+                    });
+                },
+                isUser: function(comrades) {
+                    return comrades.isUser;
+                },
+                isNotUser: function(comrades) {
+                    return !comrades.isUser;
+                }
+            });
+        })();
+    </script>
+
+</dom-module>

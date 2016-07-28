@@ -1,0 +1,15 @@
+.page
+{
+    bottom: 48px;
+    top: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    overflow-y: scroll;
+}
+
+.page--no-bottombar
+{
+    z-index: 1;
+    bottom: 0;
+}
